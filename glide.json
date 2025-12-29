@@ -1,0 +1,16 @@
+{
+  "name": "Universal Video Thumbnail",
+  "description": "Generates a thumbnail image from YouTube, Vimeo, Loom, or hosted video URLs.",
+  "author": "Your Name",
+  "params": [
+    {
+      "name": "url",
+      "displayName": "Video URL",
+      "type": "string"
+    }
+  ],
+  "result": {
+    "type": "string",
+    "displayName": "Thumbnail Image"
+  }
+}
