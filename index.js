@@ -1,22 +1,22 @@
-window.function = export default async function (url) {
+export default async function (url) {
     if (!url) return undefined;
 
     const cleanUrl = url.split('?')[0].toLowerCase();
     
-    // 1. Check if it's already an image
+    // 1. IMAGE CHECK: If it's already an image, return it.
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
     if (imageExtensions.some(ext => cleanUrl.endsWith(ext))) {
         return url;
     }
 
-    // 2. YouTube (Regex Method - Fastest)
+    // 2. YOUTUBE (Regex - Supports Shorts, Embeds, Standard)
     const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
     const ytMatch = url.match(youtubeRegex);
     if (ytMatch) {
         return `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
     }
 
-    // 3. Vimeo (OEmbed API)
+    // 3. VIMEO (OEmbed API)
     if (url.includes('vimeo.com/')) {
         try {
             const response = await fetch(`https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}`);
@@ -25,11 +25,11 @@ window.function = export default async function (url) {
                 return data.thumbnail_url;
             }
         } catch (error) {
-            // console.log("Vimeo fetch error", error);
+            // Silently fail to return undefined
         }
     }
 
-    // 4. Loom (OEmbed API)
+    // 4. LOOM (OEmbed API)
     if (url.includes('loom.com/share/') || url.includes('loom.com/v/')) {
         try {
             const response = await fetch(`https://www.loom.com/v1/oembed?url=${encodeURIComponent(url)}`);
@@ -38,12 +38,12 @@ window.function = export default async function (url) {
                 return data.thumbnail_url;
             }
         } catch (error) {
-             // console.log("Loom fetch error", error);
+            // Silently fail
         }
     }
 
-    // 5. Fallback: Hosted Video File (Requires DOM)
-    // We wrap this in a check to prevent crashing if running in a Worker
+    // 5. HOSTED VIDEO FALLBACK (Browser DOM Required)
+    // This will only work if Glide's driver exposes 'document'. 
     if (typeof document !== 'undefined') {
         return new Promise((resolve) => {
             try {
@@ -52,7 +52,7 @@ window.function = export default async function (url) {
                 video.src = url;
                 video.muted = true;
                 
-                // Timeout to prevent hanging forever
+                // 3-second timeout to prevent hanging
                 const timeout = setTimeout(() => resolve(undefined), 3000);
 
                 video.onloadedmetadata = () => {
@@ -83,6 +83,5 @@ window.function = export default async function (url) {
         });
     }
 
-    // If we reach here, we couldn't generate a thumbnail
     return undefined;
 }
