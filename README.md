@@ -20,7 +20,7 @@ It is designed to be a "set it and forget it" solution that handles different pl
 3.  Paste the following URL into the column configuration:
 
     ```text
-    [https://rpetitto.github.io/mediathumbnail/](https://rpetitto.github.io/mediathumbnail/)
+    https://rpetitto.github.io/mediathumbnail/
     ```
 
     **Important:** You must include the trailing slash `/`.
