@@ -46,6 +46,13 @@ window.function = async function (urlArg) {
     } catch (error) { /* ignore */ }
   }
 
+  // 6. Apple Video Files
+  const heavyVideoExtensions = ['.mov', '.mkv', '.flv', '.avi', '.hevc'];
+  if (heavyVideoExtensions.some(ext => cleanUrl.endsWith(ext))) {
+     // This uses the 'demo' account. You should use your own cloud name.
+     return `https://res.cloudinary.com/glide/video/fetch/f_jpg,so_2/${url}`;
+  }
+
   // 7. Hosted Video Fallback (DOM)
   return new Promise((resolve) => {
     try {
